@@ -27,7 +27,7 @@ def get_bar_chart(plantId=None):
             ).filter(
                 ExternalPurchase.plantId == plantId
                 if plantId is not None
-                else ExternalPurchase.plantId != None
+                else ExternalPurchase.plantId is not None
             ).limit(5).all()
             other_quantityInKg = int(sum_of_materials[1][4]) - sum([int(i[2]) for i in sum_of_materials])
             other_percentage = round(100 - sum([i[3] for i in sum_of_materials]), 2)
@@ -51,7 +51,7 @@ def get_bar_chart(plantId=None):
             raise
         else:
             session.commit()
-        return response
+    return response
 
 
 if __name__ == '__main__':
