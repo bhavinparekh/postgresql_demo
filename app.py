@@ -12,7 +12,8 @@ def get_bar_chart(plantId="ABC"):
                 Material.Text,
                 ExternalPurchase.materialId,
                 func.sum(cast(ExternalPurchase.quantityInUnitOfMeasure, Integer)).label("quantityInKg"),
-
+                over(func.sum(cast(ExternalPurchase.quantityInUnitOfMeasure, Integer)) * 100 /
+                     func.sum(func.sum(cast(ExternalPurchase.quantityInUnitOfMeasure, Integer)))).label("allPurchaseQuantity")
             ).join(
                 Material, ExternalPurchase.materialId == Material.uid
             ).group_by(
@@ -26,14 +27,6 @@ def get_bar_chart(plantId="ABC"):
                 else ExternalPurchase.plantId != None
             ).limit(5).all()
 
-            sum_of_all_materials = session.query(
-                func.sum(cast(ExternalPurchase.quantityInUnitOfMeasure, Integer))
-            ).filter(
-                ExternalPurchase.plantId == plantId
-                if plantId is not None
-                else ExternalPurchase.plantId != None
-            ).one()
-            print(sum_of_all_materials)
             for i in sum_of_materials:
                 print(i)
 
