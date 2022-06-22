@@ -13,12 +13,13 @@ class Insertion:
             session.begin()
             try:
                 materials = self.preprocess.get_material()
+                mts = []
                 for _, row in materials.iterrows():
                     stmt = select(Material).where(Material.uid == str(row['uid']))
                     result = session.execute(stmt)
                     if result.fetchone() is None:
-                        mt = Material(uid=row['uid'], Text=row['text'])
-                        session.add(mt)
+                        mts.append(Material(uid=row['uid'], Text=row['text']))
+                session.bulk_save_objects(mts)
             except:
                 session.rollback()
                 raise
@@ -30,13 +31,13 @@ class Insertion:
             session.begin()
             try:
                 plants = self.preprocess.get_plant()
+                pts = []
                 for _, row in plants.iterrows():
                     stmt = select(Plant).where(Plant.uid == str(row['uid']))
                     result = session.execute(stmt)
-
                     if result.fetchone() is None:
-                        pt = Plant(uid=row['uid'], Text=row['text'], region=row['region'])
-                        session.add(pt)
+                        pts.append(Plant(uid=row['uid'], Text=row['text'], region=row['region']))
+                session.bulk_save_objects(pts)
             except:
                 session.rollback()
                 raise
@@ -48,13 +49,13 @@ class Insertion:
             session.begin()
             try:
                 suppliers = self.preprocess.get_supplier()
+                sps = []
                 for _, row in suppliers.iterrows():
                     stmt = select(Supplier).where(Supplier.uid == str(row['uid']))
                     result = session.execute(stmt)
-
                     if result.fetchone() is None:
-                        sp = Supplier(uid=row['uid'], Text=row['text'])
-                        session.add(sp)
+                        sps.append(Supplier(uid=row['uid'], Text=row['text']))
+                session.bulk_save_objects(sps)
             except:
                 session.rollback()
                 raise
@@ -66,12 +67,13 @@ class Insertion:
             session.begin()
             try:
                 ExternalPurchases = self.preprocess.get_external_purchase()
+                eps = []
                 for _, row in ExternalPurchases.iterrows():
-                    ep = ExternalPurchase(materialId=row['materialId'], plantId=row['plantId'],
-                                          supplierId=row['supplierId'],
-                                          unitOfMeasure=row['unitOfMeasure'],
-                                          quantityInUnitOfMeasure=row['quantityInUnitOfMeasure'])
-                    session.add(ep)
+                    eps.append(ExternalPurchase(materialId=row['materialId'], plantId=row['plantId'],
+                                                supplierId=row['supplierId'],
+                                                unitOfMeasure=row['unitOfMeasure'],
+                                                quantityInUnitOfMeasure=row['quantityInUnitOfMeasure']))
+                session.bulk_save_objects(eps)
             except:
                 session.rollback()
                 raise
